@@ -327,6 +327,7 @@ namespace ServiceStack.WebHost.Endpoints.Tests
 
 			var request = new Secured { Name = "test" };
 			SecureResponse response = null;
+		    var responseReceived = new ManualResetEvent(false);
 
 			client.SendAsync<AuthResponse>(new Auth {
 				provider = CredentialsAuthProvider.Name,
@@ -335,11 +336,16 @@ namespace ServiceStack.WebHost.Endpoints.Tests
 				RememberMe = true,
 			}, authResponse => {
 				Console.WriteLine(authResponse.Dump());
-				client.SendAsync<SecureResponse>(request, r => response = r, FailOnAsyncError);
-
+				client.SendAsync<SecureResponse>(request, r =>
+				{
+				    response = r;
+				    responseReceived.Set();
+				}, FailOnAsyncError);
 			}, FailOnAsyncError);
 
-			Thread.Sleep(TimeSpan.FromSeconds(1));
+            if (!responseReceived.WaitOne(2000))
+                Assert.Fail("Did not receive SecureResponse within a reasonable timeframe.");
+
 			Assert.That(response.Result, Is.EqualTo(request.Name));
 		}
 		
