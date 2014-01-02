@@ -30,13 +30,6 @@
     <ConsolePause>False</ConsolePause>
     <DefineConstants>MONOTOUCH</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="monotouch" />
-    <Reference Include="System.Runtime.Serialization" />
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
     <Compile Include="..\..\ServiceStack.Interfaces\CacheAccess\ICacheClearable.cs">
@@ -599,16 +592,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\ServiceStack.Interfaces\Redis\Redis-annotated.png">
-      <Link>Redis\Redis-annotated.png</Link>
-    </Content>
-    <Content Include="..\..\ServiceStack.Interfaces\Redis\Redis.png">
-      <Link>Redis\Redis.png</Link>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\ServiceStack.Interfaces\Redis\Redis.cd">
       <Link>Redis\Redis.cd</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 </Project>
