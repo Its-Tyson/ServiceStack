@@ -142,5 +142,36 @@ namespace ServiceStack.ServiceHost.Tests.Formats_Razor
             });
         }
 
+        [Test]
+        public void Cascading_layout_templates_work_within_view_subdirectories()
+        {
+            // View page within subdirectory.
+            const string html = "This is my nested view template with nested default layout, Hello @Model.Name!";
+            RazorFormat.AddFileAndPage("/views/Folder/Nested.cshtml", html);
+
+            // Default subidrectory layout, this SHOULD be used.
+            const string nestedLayoutHtml = "<html><body class='nested'><div>@RenderSection(\"Title\")</div>@RenderBody()</body></html>";
+            RazorFormat.AddFileAndPage("/views/Folder/_Layout.cshtml", nestedLayoutHtml);
+
+            // Default root layout, this should NOT be used.
+            RazorFormat.AddFileAndPage("/views/_Layout.cshtml", LayoutHtml);
+
+            var mockReq = new MockHttpRequest { OperationName = "Nested" };
+            var mockRes = new MockHttpResponse();
+            var dto = new NestedResponse { Name = "World" };
+            RazorFormat.ProcessRequest(mockReq, mockRes, dto);
+            var result = mockRes.ReadAsString();
+
+            Assert.That(result, Is.EqualTo("<html><body class='nested'><div></div>This is my nested view template with nested default layout, Hello World!</body></html>"));
+        }
+    }
+
+    public class Nested
+    {
+    }
+
+    public class NestedResponse
+    {
+        public string Name { get; set; }
     }
 }
